@@ -11,13 +11,16 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+
 import { LogOut } from "lucide-react";
 import NavItems from "./NavItems";
 
-const Dropdown = () => {
-  const user={name:'Manvith',email:'manvithreddy2021@gmail.com'}
-  const handleSignOut =()=>{
-
+import { useRouter } from 'next/navigation'
+const Dropdown = ({user}:{user:User}) => {
+  const router=useRouter();
+  // const user={name:'Manvith',email:'manvithreddy2021@gmail.com'}
+  const handleSignOut =async()=>{
+    router.push('/sign-in')
   }
   return (
     <>
@@ -28,7 +31,7 @@ const Dropdown = () => {
             className="flex items-center gap-3 text-gray-4 hover:text-yellow-300 cursor-pointer"
           >
             <Avatar className="h-8 w-8">
-              <AvatarImage src="https://github.com/shadcn.png" />
+              <AvatarImage src="https://avatars.githubusercontent.com/u/161228744?v=4&size=64" />
               <AvatarFallback className="bg-yellow-500 text-yellow-900 text-sm font-bold ">
                     {user.name[0]}
               </AvatarFallback>
@@ -44,7 +47,7 @@ const Dropdown = () => {
           <DropdownMenuLabel>
             <div className="flex relative items-center gap-3 py-2">
               <Avatar className="h-8 w-8">
-                <AvatarImage src="https://github.com/shadcn.png" />
+                <AvatarImage src="https://avatars.githubusercontent.com/u/161228744?v=4&size=64" />
                 <AvatarFallback className="bg-yellow-500 text-yellow-900 text-sm font-bold ">
                       {user.name[0]}
                 </AvatarFallback>
