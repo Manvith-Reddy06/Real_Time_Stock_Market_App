@@ -16,10 +16,12 @@ import { LogOut } from "lucide-react";
 import NavItems from "./NavItems";
 
 import { useRouter } from 'next/navigation'
+import { signOut } from "better-auth/api";
 const Dropdown = ({user}:{user:User}) => {
   const router=useRouter();
   // const user={name:'Manvith',email:'manvithreddy2021@gmail.com'}
   const handleSignOut =async()=>{
+    await signOut();
     router.push('/sign-in')
   }
   return (
