@@ -1,5 +1,6 @@
+import { getFormattedTodayDate } from '@/lib/utils';
 import nodemailer from 'nodemailer';
-import { WELCOME_EMAIL_TEMPLATE } from './templates';
+import { NEWS_SUMMARY_EMAIL_TEMPLATE, WELCOME_EMAIL_TEMPLATE } from './templates';
 
 export const transporter = nodemailer.createTransport({
     service:'gmail',
@@ -24,4 +25,25 @@ export const sendWelcomeEmail=async({email,name,intro}:WelcomeEmailData)=>{
 
     await transporter.sendMail(mailOptions);
 }
+
+export const sendNewsSummaryEmail = async ({
+    email,
+    name,
+    newsContent,
+}: NewsSummaryEmailData) => {
+    const htmlTemplate = NEWS_SUMMARY_EMAIL_TEMPLATE.replace(
+        '{{date}}',
+        getFormattedTodayDate()
+    ).replace('{{newsContent}}', newsContent);
+
+    const mailOptions = {
+        from: `"Stock Analyzer" <${process.env.NODEMAILER_EMAIL!}>`,
+        to: email,
+        subject: `Your Daily Market News Summary`,
+        text: 'Your personalized market news summary is ready.',
+        html: htmlTemplate,
+    };
+
+    await transporter.sendMail(mailOptions);
+};
 
