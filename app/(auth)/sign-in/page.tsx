@@ -2,10 +2,14 @@
 import FooterLink from "@/components/forms/FooterLink";
 import InputField from "@/components/forms/InputField";
 import { Button } from "@/components/ui/button";
+import { signInWithEmail } from "@/lib/actions/auth.actions";
+import { useRouter } from "next/navigation";
 import React from "react";
 import { SubmitHandler, useForm } from 'react-hook-form';
+import { toast } from "sonner";
 
 const SignIn = () => {
+  const router=useRouter();
   const {
     register,
     handleSubmit,
@@ -20,9 +24,19 @@ const SignIn = () => {
   });
   const onSubmit = async (data: SignInFormData) => {
     try {
-      console.log(data);
+      const result = await signInWithEmail(data);
+      if (result.success) {
+        router.push('/');
+      } else {
+        toast.error('Sign In Failed', {
+          description: result.error ?? 'Invalid email or password',
+        });
+      }
     } catch (e) {
       console.error(e);
+      toast.error('Sign In Failed', {
+        description: e instanceof Error ? e.message : 'Failed to sign in',
+      });
     }
   };
   return (
@@ -48,7 +62,7 @@ const SignIn = () => {
                 }}
             />
             <InputField
-                name="Password"
+                name="password"
                 label="Password"
                 placeholder="Enter a strong password"
                 type='password'
@@ -58,6 +72,7 @@ const SignIn = () => {
                     required: 'Password is Required',
                     minLength: {
                         value: 8,
+                        message: 'Password must be at least 8 characters',
                     }
                 }}
 
@@ -66,7 +81,7 @@ const SignIn = () => {
                 />
 
             <Button type='submit' disabled={isSubmitting} className='yellow-btn w-full mt-5'>
-                {isSubmitting ? 'Creating Account' : 'Start Your Investment Journey'}
+                {isSubmitting ? 'Signing In...' : 'Sign In'}
             </Button>
 
             <FooterLink

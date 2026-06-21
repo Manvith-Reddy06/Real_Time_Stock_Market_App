@@ -1,48 +1,42 @@
 "use client";
 import { useRef, useEffect } from "react";
-import React from "react";
 
 const useTradingViewWidget = (
   scriptUrl: string,
   config: Record<string, unknown>,
-  height = 600,
+  height: number | string = 600,
 ) => {
-  // small letter at start as it is a hook
   const containerRef = useRef<HTMLDivElement | null>(null);
-  // apply changes to this containerRef
 
   useEffect(() => {
-    //if container doesnt have any value
     if (!containerRef.current) return;
-    // return when the trading view is akready loaded
-    if (containerRef.current.dataset.loaded) return;
-    containerRef.current!.innerHTML = `
-  <div class="tradingview-widget-container__widget" style="width:100%; height:${height}px;"></div>`;
+    
+    // 1. Clear the container completely. 
+    // This prevents duplicate scripts during React 18 Strict Mode
+    // and ensures a fresh slate if the scriptUrl or config changes.
+    containerRef.current.innerHTML = "";
+
+    // 2. Dynamically create the inner widget div.
+    // By doing this inside the hook instead of the React component, 
+    // we prevent React from tracking and conflicting with this DOM node
+    // when TradingView mutates it (e.g. replacing it with an iframe).
+    const widgetDiv = document.createElement("div");
+    widgetDiv.className = "tradingview-widget-container__widget";
+    widgetDiv.style.height = `${height}px`;
+    widgetDiv.style.width = "100%";
+
+    // 3. Create the script element.
     const script = document.createElement("script");
-    script.src =scriptUrl;
+    script.src = scriptUrl;
     script.async = true;
+    script.type = "text/javascript";
     script.innerHTML = JSON.stringify(config);
 
+    // 4. Append both directly to the ref container.
+    containerRef.current.appendChild(widgetDiv);
     containerRef.current.appendChild(script);
-    //change the dataset to loaded after all the changes
-    containerRef.current.dataset.loaded='true';
 
-    // if you donot do a cleanup
-    // old scripts remain in the DOM
-    // duplicate TradingView widgets can appear
-    // memory leaks can happen
-    // re-rendering may append multiple scripts again
-    // dataset.loaded stays "true" even after component removal
-
-    return() => {
-        if(containerRef.current){
-            containerRef.current.innerHTML='';
-            delete containerRef.current.dataset.loaded ;
-        }
-    }
-
-    // return 
-  }, [scriptUrl,config,height]);
+  }, [scriptUrl, config, height]);
 
   return containerRef;
 };
