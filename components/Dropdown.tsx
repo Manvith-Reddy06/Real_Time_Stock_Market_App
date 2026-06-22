@@ -17,7 +17,7 @@ import NavItems from "./NavItems";
 
 import { useRouter } from 'next/navigation'
 import { signOut } from "better-auth/api";
-const Dropdown = ({user}:{user:User}) => {
+const Dropdown = ({user, initialStocks}:{user:User, initialStocks:StockWithWatchlistStatus[]}) => {
   const router=useRouter();
   // const user={name:'Manvith',email:'manvithreddy2021@gmail.com'}
   const handleSignOut =async()=>{
@@ -70,7 +70,7 @@ const Dropdown = ({user}:{user:User}) => {
           </DropdownMenuItem>
           <DropdownMenuSeparator className="hidden sm:bg-gray-600"></DropdownMenuSeparator>
           <nav className="sm:hidden">
-            <NavItems/>
+            <NavItems initialStocks={initialStocks}/>
           </nav>
         </DropdownMenuContent>
       </DropdownMenu>
