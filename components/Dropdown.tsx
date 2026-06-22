@@ -9,7 +9,7 @@ import {
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
-  DropdownMenuTrigger,
+  DropdownMenuTrigger, 
 } from "@/components/ui/dropdown-menu";
 
 import { LogOut } from "lucide-react";
